@@ -14,7 +14,7 @@ variable "records" {
     subdomain = string,
     ttl       = optional(number),
     type      = string
-    content   = string,
+    content   = optional(string),
     proxied   = optional(bool, false),
     redirect  = optional(string)
   }))
@@ -24,5 +24,11 @@ variable "records" {
 variable "default_ttl" {
   type    = number
   default = 1
+  nullable = false
+}
+
+variable "internal_dns" {
+  type = string
+  default = "192.0.2.1"
   nullable = false
 }

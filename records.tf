@@ -6,7 +6,7 @@ resource "cloudflare_dns_record" "this" {
   ttl     = coalesce(each.value.ttl, var.default_ttl)
   type    = each.value.type
   comment = format("%s: %s", each.value.project, each.key)
-  content = each.value.content
+  content = coalesce(each.value.content, var.internal_dns)
   proxied = each.value.proxied
 }
 
