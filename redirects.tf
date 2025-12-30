@@ -1,5 +1,5 @@
 resource "cloudflare_ruleset" "redirects" {
-  depends_on = [ cloudflare_dns_record.this ]
+  depends_on = [cloudflare_dns_record.this]
   for_each   = { for k, v in var.records : k => v if v.redirect != null }
 
   zone_id = var.zone_id
@@ -7,24 +7,26 @@ resource "cloudflare_ruleset" "redirects" {
   kind    = "zone"
   phase   = "http_request_dynamic_redirect"
 
-  rules = [
-    {
-      description = format("Redirect %s.%s to %s", each.value.subdomain, var.domain, each.value.redirect)
+  rules = [{
+    enabled     = true
+    description = format("Redirect %s.%s to %s", each.value.subdomain, var.domain, each.value.redirect)
+    expression  = format("(http.host eq \"%s.%s\")", each.value.subdomain, var.domain)
+    action      = "redirect"
 
-      enabled = true
-      expression = format("(http.host eq \"%s.%s\")", each.value.subdomain, var.domain)
-      action = "redirect"
-
-      action_parameters = {
-        from_value = {
-          status_code = 301
-          target_url = {
-            value = each.value.redirect
-          }
-          preserve_query_string = true
-        }
+    action_parameters = {
+      from_value = {
+        status_code           = 301
+        target_url            = { value = each.value.redirect }
+        preserve_query_string = true
       }
     }
-  ]
+  }]
+
+  lifecycle {
+    precondition {
+      condition     = self.redirect && self.proxied
+      error_message = format("Redirect %s requires proxying", self.redirect)
+    }
+  }
 }
 

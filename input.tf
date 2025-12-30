@@ -1,10 +1,10 @@
 variable "domain" {
-  type = string
+  type     = string
   nullable = false
 }
 
 variable "zone_id" {
-  type = string
+  type     = string
   nullable = false
 }
 
@@ -22,13 +22,13 @@ variable "records" {
 }
 
 variable "default_ttl" {
-  type    = number
-  default = 1
+  type     = number
+  default  = 1
   nullable = false
 }
 
 variable "internal_dns" {
-  type = string
-  default = "192.0.2.1"
+  type     = string
+  default  = "192.0.2.1"
   nullable = false
 }
