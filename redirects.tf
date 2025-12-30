@@ -24,7 +24,7 @@ resource "cloudflare_ruleset" "redirects" {
 
   lifecycle {
     precondition {
-      condition     = each.value.redirect && each.value.proxied
+      condition     = (each.value.redirect != null) && each.value.proxied
       error_message = format("Redirect \"%s\" requires proxying", each.value.redirect)
     }
   }
